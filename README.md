@@ -1,6 +1,6 @@
 Doki Theme Icons
 ---
-
+> Below are the statements by the original maintainer, @Unthrottled
 <div align="center">
     <img src="https://doki.assets.unthrottled.io/misc/doki_icons_logo.svg" ></img>
 </div>
@@ -112,13 +112,6 @@ If you would like to help out with the project, then you'll want to check out th
 Great! I am glad you like it!
 
 Be sure to ⭐ and share it with other weebs!
-
-## Contributions?
-
-I think your voice needs to be heard! You probably have good ideas, so feel free to submit your feedback
-as [an issue](https://github.com/doki-theme/doki-theme-jupyter/issues/new).
-
-Help make this plugin better!
 
 ---
 

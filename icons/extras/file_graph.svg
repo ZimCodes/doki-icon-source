@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<svg id="c" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <g>
+    <rect x="2.6" y=".37" width="18.8" height="23.27" rx="2.65" ry="2.65" fill="#6e85f8"/>
+    <rect x="4.74" y="3.09" width="11.29" height="2.43" rx=".92" ry=".92" fill="#73ff9d"/>
+    <rect x="4.74" y="6.66" width="13.15" height="2.43" rx=".92" ry=".92" fill="#73ff9d"/>
+    <rect x="4.74" y="10.23" width="9.84" height="2.43" rx=".92" ry=".92" fill="#73ff9d"/>
+  </g>
+  <g transform="translate(4.800000000000001 4.800000000000001) scale(0.6 0.6)" stroke="#000000" stroke-width="7" stroke-alignment="outside">
+    <polygon points="9.51 5.62 19.36 13.7 6.76 19.14 9.51 5.62" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="7" stroke-alignment="outside"/>
+    <circle cx="19.36" cy="13.7" r="3.81" fill="#9a8bff" stroke="#000000" stroke-width="7" stroke-alignment="outside"/>
+    <circle cx="9.51" cy="5.62" r="3.81" fill="#9a8bff" stroke="#000000" stroke-width="7" stroke-alignment="outside"/>
+    <path d="m6.76,16c.23-.12.99-.63,2.11-.88,2.58-.59,3.57,2.25,2.05,4.39-1.36,1.56-2.76,2.27-4.15,3.2-1.39-.92-2.8-1.64-4.15-3.2-1.52-2.14-.53-4.98,2.05-4.39,1.12.25,1.88.76,2.11.88" fill="#ff8bf5" stroke="#000000" stroke-width="7" stroke-alignment="outside"/>
+  </g>
+  <g transform="translate(4.800000000000001 4.800000000000001) scale(0.6 0.6)">
+    <polygon points="9.51 5.62 19.36 13.7 6.76 19.14 9.51 5.62" fill="none" stroke="#6e85f8" stroke-miterlimit="10" stroke-width="2.5"/>
+    <circle cx="19.36" cy="13.7" r="3.81" fill="#9a8bff"/>
+    <circle cx="9.51" cy="5.62" r="3.81" fill="#9a8bff"/>
+    <path d="m6.76,16c.23-.12.99-.63,2.11-.88,2.58-.59,3.57,2.25,2.05,4.39-1.36,1.56-2.76,2.27-4.15,3.2-1.39-.92-2.8-1.64-4.15-3.2-1.52-2.14-.53-4.98,2.05-4.39,1.12.25,1.88.76,2.11.88" fill="#ff8bf5"/>
+  </g>
+</svg>
