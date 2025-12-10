@@ -1,15 +1,12 @@
-import xmlParser from "xml2js";
-import * as fs from "fs";
-import deepClone from "lodash/cloneDeep";
-import builder from "xmlbuilder";
+import { XMLParser } from "fast-xml-parser";
+import {writeFile,readFile} from "node:fs/promises";
+import { cloneDeep } from "lodash";
+import { create } from "xmlbuilder2";
 
-const parser = new xmlParser.Parser({
-  explicitChildren: true,
-  mergeAttrs: false,
-  preserveChildrenOrder: true,
+const parser = new XMLParser({
+  preserveOrder: true,
+  ignoreAttributes: false
 });
-
-const toXml = (xml1: string): Promise<any> => parser.parseStringPromise(xml1);
 
 function constructSVG(root: any, children: any[]) {
   if (!children) {
@@ -17,38 +14,62 @@ function constructSVG(root: any, children: any[]) {
   }
 
   for (const child of children) {
-    const childNode = root.ele(child["#name"], child.$ || {});
-    constructSVG(childNode, child.$$);
+    /*
+    {
+    circle: [],
+    ':@': {
+      '@_cx': '11.56',
+      '@_cy': '12.05',
+      '@_r': '7.8',
+      '@_fill': '#6e85f8'
+    }
+  }
+    * */
+    const [nameKey, attrKey] = Object.keys(child);
+    const childNode = root.ele(nameKey, child[attrKey] || {});
+    constructSVG(childNode, child[nameKey]);
   }
 }
 
 function buildXml(workingCopy: any): string {
-  const svg = workingCopy.svg;
-  const root = builder.create(svg["#name"]);
+  /* {
+    svg: [ [Object], [Object], [Object] ],
+    ':@': {
+      '@_id': 'c',
+      '@_xmlns': 'http://www.w3.org/2000/svg',
+      '@_viewBox': '0 0 24 24'
+    }
+  }
+  * */
+  const svgLayer = workingCopy[1];
 
-  Object.entries(svg.$).forEach(([attributeKey, attributeValue]) =>
-    root.att(attributeKey, attributeValue)
-  );
+  const root = create().ele("svg");
+  Object.entries(svgLayer[":@"]).forEach(([attributeKey, attributeValue]: [string, string]) => {
+    root.att(attributeKey, attributeValue);
+  });
 
-  constructSVG(root, svg.$$);
+  constructSVG(root, svgLayer.svg);
 
-  return root.end({ pretty: true });
+  return root.end({ prettyPrint: true });
 }
 
 Promise.resolve()
   .then(async () => {
     const svgPath =
-      "/Users/alexsimons/workspace/doki-theme-icons/icons/exported/breakpoint.svg";
+      "C:\Users\notha\IdeaProjects\doki\iconSource\icons\exported\breakpoint.svg";
+    // "/Users/alexsimons/workspace/doki-theme-icons/icons/exported/breakpoint.svg";
     const generatedFilePath =
-      "/Users/alexsimons/workspace/doki-theme-icons/icons/generated/breakpoint.svg";
-    const svgAsXML = await toXml(
-      fs.readFileSync(svgPath, { encoding: "utf-8" })
+      "C:\Users\notha\IdeaProjects\doki\iconSource\icons\generated\breakpoint.svg";
+    // "/Users/alexsimons/workspace/doki-theme-icons/icons/generated/breakpoint.svg";
+    let xmlString = await readFile(svgPath, { encoding: "utf-8" });
+    const svgToJS = parser.parse(
+      xmlString
     );
-    const workingCopy = deepClone(svgAsXML);
+    const workingCopy = cloneDeep(svgToJS);
 
-    const xmlString = buildXml(workingCopy);
+    xmlString = buildXml(workingCopy);
 
-    fs.writeFileSync(generatedFilePath, xmlString, {
+    await writeFile(generatedFilePath, xmlString, {
       encoding: "utf-8",
     });
   })

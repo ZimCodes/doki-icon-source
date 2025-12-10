@@ -1,30 +1,28 @@
-import {resolvePaths, StringDictionary, walkDir} from "doki-build-source";
-import path from "path";
-import xmlParser from "xml2js";
-import * as fs from "fs";
-import deepClone from "lodash/cloneDeep";
-import builder from "xmlbuilder";
-import {chunk} from "lodash";
-import markdownTable from "markdown-table";
+import { resolvePaths, StringDictionary, walkDir } from "doki-build-source";
+import * as path from "node:path";
+import {existsSync,readFileSync,writeFileSync} from "node:fs";
+import { cloneDeep } from "lodash";
+import { create } from "xmlbuilder2";
+import { chunk } from "lodash";
+import { markdownTable } from "markdown-table";
+import { XMLParser } from "fast-xml-parser";
 
-const parser = new xmlParser.Parser({
-  explicitChildren: true,
-  mergeAttrs: false,
-  preserveChildrenOrder: true,
+const parser = new XMLParser({
+  preserveOrder: true,
+  ignoreAttributes: false,
 });
 
-const toXml = (xml1: string): Promise<any> => parser.parseStringPromise(xml1);
-
-const {appTemplatesDirectoryPath, masterTemplateDirectoryPath} = resolvePaths(__dirname);
+const { appTemplatesDirectoryPath, masterTemplateDirectoryPath } =
+  resolvePaths(__dirname);
 
 interface IconMapping {
   iconName: string;
   sizes: number[];
   fill?: string | StringDictionary<string>;
   force?: {
-    fill?: boolean
+    fill?: boolean;
   };
-};
+}
 
 const iconsDir = path.resolve(__dirname, "..", "..", "icons");
 const rootDir = path.resolve(__dirname, "..", "..");
@@ -47,16 +45,27 @@ function constructSVG(root: any, children: any[]) {
 }
 
 function buildXml(workingCopy: any): string {
-  const svg = workingCopy.svg;
-  const root = builder.create(svg["#name"]);
+  /* {
+    svg: [ [Object], [Object], [Object] ],
+    ':@': {
+      '@_id': 'c',
+      '@_xmlns': 'http://www.w3.org/2000/svg',
+      '@_viewBox': '0 0 24 24'
+    }
+  }
+  * */
+  const svgLayer = workingCopy[1];
 
-  Object.entries(svg.$).forEach(([attributeKey, attributeValue]) =>
-    root.att(attributeKey, attributeValue)
+  const root = create().ele("svg");
+  Object.entries(svgLayer[":@"]).forEach(
+    ([attributeKey, attributeValue]: [string, string]) => {
+      root.att(attributeKey, attributeValue);
+    },
   );
 
-  constructSVG(root, svg.$$);
+  constructSVG(root, svgLayer.svg);
 
-  return root.end({pretty: true});
+  return root.end({ prettyPrint: true });
 }
 
 type Anchor =
@@ -74,39 +83,44 @@ const defaultSvgSize = 24;
 
 function getPosition(
   svgPosition: Anchor,
-  scale: number | XY
+  scale: number | XY,
 ): { x: number; y: number } {
-  const usableScale: number = typeof scale === 'number' ?
-    scale : Math.max(scale.x || defaultSvgSize, scale.y || defaultSvgSize);
+  const usableScale: number =
+    typeof scale === "number"
+      ? scale
+      : Math.max(scale.x || defaultSvgSize, scale.y || defaultSvgSize);
   const scaledSVG = defaultSvgSize * usableScale;
   const delta = defaultSvgSize - scaledSVG;
   switch (svgPosition) {
     case "LOWER_LEFT":
-      return {x: 0, y: delta};
+      return { x: 0, y: delta };
     case "LOWER_RIGHT":
       return {
         x: delta,
         y: delta,
       };
     case "LOWER":
-      return {x: delta / 2, y: delta};
+      return { x: delta / 2, y: delta };
     case "MIDDLE_LEFT":
-      return {x: 0, y: delta / 2};
+      return { x: 0, y: delta / 2 };
     case "MIDDLE":
-      return {x: delta / 2, y: delta / 2};
+      return { x: delta / 2, y: delta / 2 };
     case "MIDDLE_RIGHT":
-      return {x: delta, y: delta / 2};
+      return { x: delta, y: delta / 2 };
     default:
     case "UPPER_LEFT":
-      return {x: 0, y: 0};
+      return { x: 0, y: 0 };
     case "UPPER":
-      return {x: delta / 2, y: 0};
+      return { x: delta / 2, y: 0 };
     case "UPPER_RIGHT":
-      return {x: delta, y: 0};
+      return { x: delta, y: 0 };
   }
 }
 
-function addAttributes(nonBaseGuts: StringDictionary<any>, attributeProvider: (node: any) => void) {
+function addAttributes(
+  nonBaseGuts: StringDictionary<any>,
+  attributeProvider: (node: any) => void,
+) {
   if (!nonBaseGuts) {
     return;
   }
@@ -133,7 +147,7 @@ type LayeredSVGSpec = {
   margin?: XY;
   fill?: string | StringDictionary<string>;
   force?: {
-    fill?: boolean
+    fill?: boolean;
   };
   scale?: number | XY;
   opacity?: number;
@@ -143,53 +157,60 @@ type LayeredSVGSpec = {
   stroke?: {
     color: string;
     thiccness: number;
-    location?: 'inner' | 'center' | 'outer'
+    location?: "inner" | "center" | "outer";
   };
-
 };
 
-const hexToNamedIconColor: StringDictionary<string> = JSON.parse(fs.readFileSync(
-  path.join(appTemplatesDirectoryPath, 'icon.palette.template.json'), {
-    encoding: 'utf-8',
-  }
-))
-const namedIconColorToHex = Object.entries(hexToNamedIconColor)
-  .reduce<StringDictionary<string>>((accum, [hex, namedColor]) => {
-    accum[namedColor] = hex;
-    return accum;
-  }, {})
+const hexToNamedIconColor: StringDictionary<string> = JSON.parse(
+  readFileSync(
+    path.join(appTemplatesDirectoryPath, "icon.palette.template.json"),
+    {
+      encoding: "utf-8",
+    },
+  ),
+);
+const namedIconColorToHex = Object.entries(hexToNamedIconColor).reduce<
+  StringDictionary<string>
+>((accum, [hex, namedColor]) => {
+  accum[namedColor] = hex;
+  return accum;
+}, {});
 
-function updateIconFill(fill: string | StringDictionary<string> | undefined,
-                        opacity: number | undefined,
-                        nonBaseGuts: any,
-                        nextSVGSpec: Partial<LayeredSVGSpec>) {
-  const fillProvider: (color: string) => string = typeof fill === 'string' ?
-    () => hexToNamedIconColor[fill] || namedIconColorToHex[fill] || fill :
-    (color) => {
-      if (typeof fill === 'object') {
-        const namedColorMapping = hexToNamedIconColor[color];
-        const newColor = fill[namedColorMapping];
-        if (namedColorMapping && newColor) {
-          return newColor.startsWith('#') ?
-            newColor :
-            namedIconColorToHex[newColor] || color
-        }
-      }
-      return color
-    }
+function updateIconFill(
+  fill: string | StringDictionary<string> | undefined,
+  opacity: number | undefined,
+  nonBaseGuts: any,
+  nextSVGSpec: Partial<LayeredSVGSpec>,
+) {
+  const fillProvider: (color: string) => string =
+    typeof fill === "string"
+      ? () => hexToNamedIconColor[fill] || namedIconColorToHex[fill] || fill
+      : (color) => {
+          if (typeof fill === "object") {
+            const namedColorMapping = hexToNamedIconColor[color];
+            const newColor = fill[namedColorMapping];
+            if (namedColorMapping && newColor) {
+              return newColor.startsWith("#")
+                ? newColor
+                : namedIconColorToHex[newColor] || color;
+            }
+          }
+          return color;
+        };
   if (fill || opacity) {
-    addAttributes(nonBaseGuts, node => {
+    addAttributes(nonBaseGuts, (node) => {
       if (fill) {
         const fillToUse = fillProvider(node.fill);
-        if (node.fill && node.fill !== 'none' ||
-          nextSVGSpec.force?.fill === true) {
+        if (
+          (node.fill && node.fill !== "none") ||
+          nextSVGSpec.force?.fill === true
+        ) {
           node.fill = fillToUse;
         }
-        if (node.stroke && node.stroke !== 'none') {
-          node.stroke = fillToUse
+        if (node.stroke && node.stroke !== "none") {
+          node.stroke = fillToUse;
         }
       }
-
 
       if (opacity) {
         node.opacity = opacity;
@@ -206,12 +227,15 @@ function processSVG(svgAsXML: any, nextSVGSpec: LayeredSVGSpec): any[] {
   };
   const svgPosition = nextSVGSpec.position;
   if (svgPosition) {
-    const {x: scaleX, y: scaleY} =
-      typeof nextSVGSpec.scale === 'number' || nextSVGSpec.scale === undefined ?
-        {x: nextSVGSpec.scale, y: nextSVGSpec.scale} :
-        {x: nextSVGSpec.scale.x, y: nextSVGSpec.scale.y};
+    const { x: scaleX, y: scaleY } =
+      typeof nextSVGSpec.scale === "number" || nextSVGSpec.scale === undefined
+        ? { x: nextSVGSpec.scale, y: nextSVGSpec.scale }
+        : { x: nextSVGSpec.scale.x, y: nextSVGSpec.scale.y };
     const defaultSVGSize = 0.5;
-    const {x, y} = getPosition(svgPosition, nextSVGSpec.scale || defaultSVGSize);
+    const { x, y } = getPosition(
+      svgPosition,
+      nextSVGSpec.scale || defaultSVGSize,
+    );
     nonBaseGuts.$ = {
       ...nonBaseGuts.$,
       transform: `translate(${x + (nextSVGSpec.margin?.x || 0)} ${
@@ -221,105 +245,111 @@ function processSVG(svgAsXML: any, nextSVGSpec: LayeredSVGSpec): any[] {
   }
 
   const fill = nextSVGSpec.fill;
-  const opacity = nextSVGSpec.opacity
+  const opacity = nextSVGSpec.opacity;
   updateIconFill(fill, opacity, nonBaseGuts, nextSVGSpec);
 
   const svgStroke = nextSVGSpec.stroke;
   if (svgStroke) {
-    const lowerClone = deepClone(nonBaseGuts);
-    addAttributes(lowerClone, node => {
+    const lowerClone = cloneDeep(nonBaseGuts);
+    addAttributes(lowerClone, (node) => {
       node.stroke = svgStroke.color;
-      node['stroke-width'] = svgStroke.thiccness;
-      node['stroke-alignment'] = svgStroke.location || 'center';
-    })
-    return [lowerClone, nonBaseGuts]
+      node["stroke-width"] = svgStroke.thiccness;
+      node["stroke-alignment"] = svgStroke.location || "center";
+    });
+    return [lowerClone, nonBaseGuts];
   }
 
   return [nonBaseGuts];
 }
 
 class SVGSupplier {
-  constructor(private readonly svgNameToPatho: StringDictionary<string>) {
-  }
+  constructor(private readonly svgNameToPatho: StringDictionary<string>) {}
 
-  async getSVGAsXml(svgName: string): Promise<any> {
+  getSVGAsJSObject(svgName: string): string {
     const iconName = svgName;
     const svgPath =
       this.svgNameToPatho[iconName] || path.join(generatedIconsDir, iconName);
-    if (!fs.existsSync(svgPath)) {
+    if (!existsSync(svgPath)) {
       throw new Error(`Hey silly, you forgot to export ${iconName}`);
     }
 
-    return await toXml(
-      fs.readFileSync(svgPath, {encoding: "utf-8"})
-    )
+    return parser.parse(readFileSync(svgPath, { encoding: "utf-8" }));
   }
 }
 
-type LayeredIconResult = { fileName: string; layeredSVG: any, displayName: string };
+type LayeredIconResult = {
+  fileName: string;
+  layeredSVG: any;
+  displayName: string;
+};
 
 async function performLayeredSVGWork(
   mappingsFile: string,
   svgSupplier: SVGSupplier,
   shouldStage: (layeredSVGSpecs: LayeredSVGSpec[]) => boolean,
 ) {
-  await performWork<LayeredSVGSpec[]>(
-    mappingsFile,
-    async (iconLayers) => {
-      const {fileName, layeredSVG, displayName} = await iconLayers.reduce<Promise<LayeredIconResult>>(
-        (currentSVGPromise, nextSVGSpec) =>
-          currentSVGPromise.then(async (currentSVG: LayeredIconResult) => {
-            const svgName = nextSVGSpec.name;
-            const svgAsXML = await svgSupplier.getSVGAsXml(svgName)
-            const fileName = svgName.substring(0, svgName.lastIndexOf(".svg"));
-            const resolvedFileName = nextSVGSpec.newName || fileName;
-            if (!currentSVG.layeredSVG) {
-              const svgGuy = svgAsXML.svg;
-              svgGuy.$$ = processSVG(svgAsXML, nextSVGSpec);
-              return {
-                fileName: resolvedFileName,
-                layeredSVG: svgAsXML,
-                displayName: nextSVGSpec.displayName || currentSVG.displayName
-              } as LayeredIconResult;
-            } else {
-              currentSVG.displayName = nextSVGSpec.displayName || currentSVG.displayName
-              if (nextSVGSpec.includeName !== false) {
-                currentSVG.fileName += `_${resolvedFileName}`;
-              }
-              const nonBaseGuts = processSVG(svgAsXML, nextSVGSpec);
-
-              nonBaseGuts.forEach(guts =>
-                currentSVG.layeredSVG.svg.$$.push(guts)
-              )
-              return currentSVG;
+  await performWork<LayeredSVGSpec[]>(mappingsFile, async (iconLayers) => {
+    const { fileName, layeredSVG, displayName } = await iconLayers.reduce<
+      Promise<LayeredIconResult>
+    >(
+      (currentSVGPromise, nextSVGSpec) =>
+        currentSVGPromise.then(async (currentSVG: LayeredIconResult) => {
+          const svgName = nextSVGSpec.name;
+          const svgAsJS = svgSupplier.getSVGAsJSObject(svgName);
+          const fileName = svgName.substring(0, svgName.lastIndexOf(".svg"));
+          const resolvedFileName = nextSVGSpec.newName || fileName;
+          if (!currentSVG.layeredSVG) {
+            // TODO: change .svg to svgLayered. See SimpleXml.ts
+            const svgGuy = svgAsJS.svg;
+            svgGuy.$$ = processSVG(svgAsJS, nextSVGSpec);
+            return {
+              fileName: resolvedFileName,
+              layeredSVG: svgAsJS,
+              displayName: nextSVGSpec.displayName || currentSVG.displayName,
+            } as LayeredIconResult;
+          } else {
+            currentSVG.displayName =
+              nextSVGSpec.displayName || currentSVG.displayName;
+            if (nextSVGSpec.includeName !== false) {
+              currentSVG.fileName += `_${resolvedFileName}`;
             }
-          }),
-        Promise.resolve<LayeredIconResult>({fileName: "", layeredSVG: undefined, displayName: ""})
-      );
+            const nonBaseGuts = processSVG(svgAsJS, nextSVGSpec);
 
-      const svgName = `${displayName || fileName}.svg`;
-      const data = buildXml(layeredSVG);
-      const shouldStageIcon = shouldStage(iconLayers);
-      fs.writeFileSync(
-        path.join(shouldStageIcon ? stagingDir : generatedIconsDir, svgName),
-        data,
-        {encoding: "utf-8"}
-      );
-    }
-  )
+            nonBaseGuts.forEach((guts) =>
+              currentSVG.layeredSVG.svg.$$.push(guts),
+            );
+            return currentSVG;
+          }
+        }),
+      Promise.resolve<LayeredIconResult>({
+        fileName: "",
+        layeredSVG: undefined,
+        displayName: "",
+      }),
+    );
+
+    const svgName = `${displayName || fileName}.svg`;
+    const data = buildXml(layeredSVG);
+    const shouldStageIcon = shouldStage(iconLayers);
+    writeFileSync(
+      path.join(shouldStageIcon ? stagingDir : generatedIconsDir, svgName),
+      data,
+      { encoding: "utf-8" },
+    );
+  });
 }
 
-Promise.all([
-  walkDir(exportedIconsDir),
-  walkDir(oneOffsIconsDir),
-])
-  .then(allIcons => allIcons
-    .reduce((accum, next) => accum.concat(next))
-    .filter(iconPath => iconPath.endsWith('.svg'))
+Promise.all([walkDir(exportedIconsDir), walkDir(oneOffsIconsDir)])
+  .then((allIcons) =>
+    allIcons
+      .reduce((accum, next) => accum.concat(next))
+      .filter((iconPath) => iconPath.endsWith(".svg")),
   )
   .then(async (icons) => {
     const svgNameToPatho = icons.reduce((accum, generatedIconPath) => {
-      const svgName = generatedIconPath.substring(generatedIconPath.lastIndexOf(path.sep) + 1);
+      const svgName = generatedIconPath.substring(
+        generatedIconPath.lastIndexOf(path.sep) + 1,
+      );
       accum[svgName] = generatedIconPath;
       return accum;
     }, {} as StringDictionary<string>);
@@ -331,28 +361,33 @@ Promise.all([
       (layeredSVGSpecs: LayeredSVGSpec[]) =>
         layeredSVGSpecs.reduce<boolean>((accum, next) => {
           if (accum) {
-            return true
+            return true;
           }
           if (next.shouldStage !== undefined) {
             return next.shouldStage;
           }
 
           const includeName = next.includeName;
-          const isHide = !includeName && (includeName !== undefined && includeName !== null);
-          return isHide || (next.fill === '#00000') || (!!next.stroke);
-        }, false)
+          const isHide =
+            !includeName && includeName !== undefined && includeName !== null;
+          return isHide || next.fill === "#00000" || !!next.stroke;
+        }, false),
     );
-    await performLayeredSVGWork("layered.folders.icon.mappings.json", svgSupplier, () => true);
+    await performLayeredSVGWork(
+      "layered.folders.icon.mappings.json",
+      svgSupplier,
+      () => true,
+    );
 
     await performWork<IconMapping>(
       "jetbrains.mappings.json",
       async (iconMapping) => {
-        const svgAsXML = await svgSupplier.getSVGAsXml(iconMapping.iconName);
+        const svgAsJS = svgSupplier.getSVGAsJSObject(iconMapping.iconName);
         iconMapping.sizes.forEach((iconSize) => {
-          const workingCopy = deepClone(svgAsXML);
+          const workingCopy = cloneDeep(svgAsJS);
           const fileNameWithoutExtension = iconMapping.iconName.substring(
             0,
-            iconMapping.iconName.length - 4
+            iconMapping.iconName.length - 4,
           );
           const newFileName = `${fileNameWithoutExtension}_${iconSize}x${iconSize}.svg`;
           const generatedFilePath = path.join(generatedIconsDir, newFileName);
@@ -366,40 +401,38 @@ Promise.all([
               undefined,
               nonBaseGuts,
               iconMapping,
-            )
+            );
           }
 
-
-          fs.writeFileSync(generatedFilePath, buildXml(workingCopy), {
+          writeFileSync(generatedFilePath, buildXml(workingCopy), {
             encoding: "utf-8",
           });
         });
-      }
-    )
+      },
+    );
 
-    const iconPreviewMD: string =
-      markdownTable(
-        chunk(
-          Object.entries(svgNameToPatho)
-            .sort(([nameA], [nameB]) => nameA.localeCompare(nameB))
-            .map(
-              ([iconName, iconPath]) => {
-                return [iconName, `![${iconName}](./icons${iconPath.substring(iconsDir.length)})`];
-              }
-            ),
-          3
-        )
-          .map(stuff => ([
-            stuff.map(([name,]) => name),
-            stuff.map(([, image]) => image),
-          ]))
-          .reduce((accum, next) => accum.concat(next))
+    const iconPreviewMD: string = markdownTable(
+      chunk(
+        Object.entries(svgNameToPatho)
+          .sort(([nameA], [nameB]) => nameA.localeCompare(nameB))
+          .map(([iconName, iconPath]) => {
+            return [
+              iconName,
+              `![${iconName}](./icons${iconPath.substring(iconsDir.length)})`,
+            ];
+          }),
+        3,
       )
+        .map((stuff) => [
+          stuff.map(([name]) => name),
+          stuff.map(([, image]) => image),
+        ])
+        .reduce((accum, next) => accum.concat(next)),
+    );
 
-    fs.writeFileSync(path.join(rootDir, 'all_icons.md'), iconPreviewMD, {
+    writeFileSync(path.join(rootDir, "all_icons.md"), iconPreviewMD, {
       encoding: "utf-8",
     });
-
   })
   .then(() => {
     console.log("Icon Generation Complete!");
@@ -407,15 +440,12 @@ Promise.all([
 
 async function performWork<T>(
   mappingsFile: string,
-  performWork: (mapping: T) => Promise<void>
+  performWork: (mapping: T) => Promise<void>,
 ) {
   const iconMappings: T[] = JSON.parse(
-    fs.readFileSync(
-      path.join(appTemplatesDirectoryPath, mappingsFile),
-      {
-        encoding: "utf-8",
-      }
-    )
+    readFileSync(path.join(appTemplatesDirectoryPath, mappingsFile), {
+      encoding: "utf-8",
+    }),
   );
 
   for (const iconMapping of iconMappings) {

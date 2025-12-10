@@ -1,0 +1,12 @@
+{
+  "name": "icon-source",
+  "version": "1.1.0",
+  "packageManager": "yarn@4.12.0",
+  "workspaces": [
+    "buildSrc",
+    "doki-build-source"
+  ],
+  "scripts": {
+    "deps": "git clone https://github.com/ZimCodes/doki-build-source.git"
+  }
+}

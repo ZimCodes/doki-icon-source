@@ -1,4 +1,4 @@
-Doki Theme Icons
+Doki Theme Icons - Maintenance
 ---
 > Below are the statements by the original maintainer, @Unthrottled
 <div align="center">

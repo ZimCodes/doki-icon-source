@@ -21,10 +21,21 @@ classes/
 *.icls
 src/test/resources/
 
-masterThemes/
-masterThemes
-
 *.pyc
 .ipynb_checkpoints/
 icons/generated/
 icons/staging/
+
+# Doki dependencies
+doki-build-source/
+
+## Build Source folder
+buildSrc/src/*.js
+
+# Yarn
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
