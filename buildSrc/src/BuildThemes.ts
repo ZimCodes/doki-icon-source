@@ -1,16 +1,19 @@
 import { resolvePaths, StringDictionary, walkDir } from "doki-build-source";
 import * as path from "node:path";
 import {existsSync,readFileSync,writeFileSync} from "node:fs";
-import { cloneDeep } from "lodash";
+import  _  from "lodash";
 import { create } from "xmlbuilder2";
-import { chunk } from "lodash";
 import { markdownTable } from "markdown-table";
 import { XMLParser } from "fast-xml-parser";
+import {fileURLToPath} from "node:url";
+import {convertJSObj} from "./FastXmlParserToXml2Js.js";
 
 const parser = new XMLParser({
   preserveOrder: true,
   ignoreAttributes: false,
 });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const { appTemplatesDirectoryPath, masterTemplateDirectoryPath } =
   resolvePaths(__dirname);
@@ -45,25 +48,14 @@ function constructSVG(root: any, children: any[]) {
 }
 
 function buildXml(workingCopy: any): string {
-  /* {
-    svg: [ [Object], [Object], [Object] ],
-    ':@': {
-      '@_id': 'c',
-      '@_xmlns': 'http://www.w3.org/2000/svg',
-      '@_viewBox': '0 0 24 24'
-    }
-  }
-  * */
-  const svgLayer = workingCopy[1];
+  const svg = workingCopy.svg;
+  const root = create().ele(svg["#name"]);
 
-  const root = create().ele("svg");
-  Object.entries(svgLayer[":@"]).forEach(
-    ([attributeKey, attributeValue]: [string, string]) => {
-      root.att(attributeKey, attributeValue);
-    },
+  Object.entries(svg.$ as Record<string,string>).forEach(([attributeKey, attributeValue]) =>
+    root.att(attributeKey, attributeValue)
   );
 
-  constructSVG(root, svgLayer.svg);
+  constructSVG(root, svg.$$);
 
   return root.end({ prettyPrint: true });
 }
@@ -232,10 +224,7 @@ function processSVG(svgAsXML: any, nextSVGSpec: LayeredSVGSpec): any[] {
         ? { x: nextSVGSpec.scale, y: nextSVGSpec.scale }
         : { x: nextSVGSpec.scale.x, y: nextSVGSpec.scale.y };
     const defaultSVGSize = 0.5;
-    const { x, y } = getPosition(
-      svgPosition,
-      nextSVGSpec.scale || defaultSVGSize,
-    );
+    const {x, y} = getPosition(svgPosition, nextSVGSpec.scale || defaultSVGSize);
     nonBaseGuts.$ = {
       ...nonBaseGuts.$,
       transform: `translate(${x + (nextSVGSpec.margin?.x || 0)} ${
@@ -250,7 +239,7 @@ function processSVG(svgAsXML: any, nextSVGSpec: LayeredSVGSpec): any[] {
 
   const svgStroke = nextSVGSpec.stroke;
   if (svgStroke) {
-    const lowerClone = cloneDeep(nonBaseGuts);
+    const lowerClone = _.cloneDeep(nonBaseGuts);
     addAttributes(lowerClone, (node) => {
       node.stroke = svgStroke.color;
       node["stroke-width"] = svgStroke.thiccness;
@@ -265,15 +254,16 @@ function processSVG(svgAsXML: any, nextSVGSpec: LayeredSVGSpec): any[] {
 class SVGSupplier {
   constructor(private readonly svgNameToPatho: StringDictionary<string>) {}
 
-  getSVGAsJSObject(svgName: string): string {
+  getSVGAsJSObject(svgName: string): any {
     const iconName = svgName;
     const svgPath =
       this.svgNameToPatho[iconName] || path.join(generatedIconsDir, iconName);
     if (!existsSync(svgPath)) {
       throw new Error(`Hey silly, you forgot to export ${iconName}`);
     }
-
-    return parser.parse(readFileSync(svgPath, { encoding: "utf-8" }));
+    const fastXMLJSObj = parser.parse(readFileSync(svgPath, { encoding: "utf-8" }));
+    const xml2JSObj = convertJSObj(fastXMLJSObj[1]);
+    return xml2JSObj;
   }
 }
 
@@ -299,7 +289,6 @@ async function performLayeredSVGWork(
           const fileName = svgName.substring(0, svgName.lastIndexOf(".svg"));
           const resolvedFileName = nextSVGSpec.newName || fileName;
           if (!currentSVG.layeredSVG) {
-            // TODO: change .svg to svgLayered. See SimpleXml.ts
             const svgGuy = svgAsJS.svg;
             svgGuy.$$ = processSVG(svgAsJS, nextSVGSpec);
             return {
@@ -384,7 +373,7 @@ Promise.all([walkDir(exportedIconsDir), walkDir(oneOffsIconsDir)])
       async (iconMapping) => {
         const svgAsJS = svgSupplier.getSVGAsJSObject(iconMapping.iconName);
         iconMapping.sizes.forEach((iconSize) => {
-          const workingCopy = cloneDeep(svgAsJS);
+          const workingCopy = _.cloneDeep(svgAsJS);
           const fileNameWithoutExtension = iconMapping.iconName.substring(
             0,
             iconMapping.iconName.length - 4,
@@ -412,7 +401,7 @@ Promise.all([walkDir(exportedIconsDir), walkDir(oneOffsIconsDir)])
     );
 
     const iconPreviewMD: string = markdownTable(
-      chunk(
+      _.chunk(
         Object.entries(svgNameToPatho)
           .sort(([nameA], [nameB]) => nameA.localeCompare(nameB))
           .map(([iconName, iconPath]) => {

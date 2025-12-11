@@ -1955,7 +1955,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"doki-build-source@workspace:^, doki-build-source@workspace:doki-build-source":
+"doki-build-source@workspace:*, doki-build-source@workspace:doki-build-source":
   version: 0.0.0-use.local
   resolution: "doki-build-source@workspace:doki-build-source"
   dependencies:
@@ -2482,7 +2482,7 @@ __metadata:
     "@types/markdown-table": "npm:^3.0.0"
     "@types/node": "npm:^24.10.2"
     copy-webpack-plugin: "npm:^13.0.1"
-    doki-build-source: "workspace:^"
+    doki-build-source: "workspace:*"
     fast-xml-parser: "npm:^5.3.2"
     jest: "npm:^30.2.0"
     lodash: "npm:^4.17.21"

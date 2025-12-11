@@ -1,7 +1,7 @@
 {
   "name": "icon-build-source",
   "description": "Anime based themes for <<app>>!",
-  "main": "index.js",
+  "main": "./src/BuildThemes.js",
   "repository": "git@github.com:doki-theme/doki-theme-<<app>>.git",
   "author": "Alex Simons <alex@unthrottled.io>",
   "license": "MIT",
@@ -23,15 +23,17 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
-    "doki-build-source": "workspace:^",
+    "doki-build-source": "workspace:*",
     "fast-xml-parser": "^5.3.2",
     "lodash": "^4.17.21",
     "markdown-table": "^3.0.4",
     "xmlbuilder2": "^4.0.3"
   },
   "scripts": {
-    "buildThemes": "yarn run tsc --noEmit ./src/BuildThemes.ts",
-    "test": "yarn run tsc --noEmit ./src/SimpleXml.ts",
+    "start": "yarn build && yarn node .",
+    "cleanIcons": "rimraf -g ../icons/generated/*.svg",
+    "build": "yarn run tsc --project tsconfig.build.json",
+    "buildSimple": "yarn run tsc --project tsconfig.simple.json",
     "lint": "yarn prettier --write ."
   },
   "packageManager": "yarn@4.12.0"

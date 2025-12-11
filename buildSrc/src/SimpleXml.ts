@@ -1,11 +1,12 @@
 import { XMLParser } from "fast-xml-parser";
-import {writeFile,readFile} from "node:fs/promises";
-import { cloneDeep } from "lodash";
+import { writeFile, readFile } from "node:fs/promises";
+import _ from "lodash";
 import { create } from "xmlbuilder2";
+import {stripAttribute,stripAttributeObj} from './FastXmlParserToXml2Js.js';
 
 const parser = new XMLParser({
   preserveOrder: true,
-  ignoreAttributes: false
+  ignoreAttributes: false,
 });
 
 function constructSVG(root: any, children: any[]) {
@@ -26,7 +27,7 @@ function constructSVG(root: any, children: any[]) {
   }
     * */
     const [nameKey, attrKey] = Object.keys(child);
-    const childNode = root.ele(nameKey, child[attrKey] || {});
+    const childNode = root.ele(nameKey, stripAttributeObj(child[attrKey]) || {});
     constructSVG(childNode, child[nameKey]);
   }
 }
@@ -44,9 +45,11 @@ function buildXml(workingCopy: any): string {
   const svgLayer = workingCopy[1];
 
   const root = create().ele("svg");
-  Object.entries(svgLayer[":@"]).forEach(([attributeKey, attributeValue]: [string, string]) => {
-    root.att(attributeKey, attributeValue);
-  });
+  Object.entries(svgLayer[":@"]).forEach(
+    ([attributeKey, attributeValue]: [string, any]) => {
+      root.att(stripAttribute(attributeKey), attributeValue);
+    },
+  );
 
   constructSVG(root, svgLayer.svg);
 
@@ -56,16 +59,14 @@ function buildXml(workingCopy: any): string {
 Promise.resolve()
   .then(async () => {
     const svgPath =
-      "C:\Users\notha\IdeaProjects\doki\iconSource\icons\exported\breakpoint.svg";
+      "C:\\Users\\myself\\workspace\\doki\\iconSource\\icons\\exported\\breakpoint.svg";
     // "/Users/alexsimons/workspace/doki-theme-icons/icons/exported/breakpoint.svg";
     const generatedFilePath =
-      "C:\Users\notha\IdeaProjects\doki\iconSource\icons\generated\breakpoint.svg";
+      "C:\\Users\\myself\\workspace\\doki\\iconSource\\icons\\generated\\breakpoint.svg";
     // "/Users/alexsimons/workspace/doki-theme-icons/icons/generated/breakpoint.svg";
     let xmlString = await readFile(svgPath, { encoding: "utf-8" });
-    const svgToJS = parser.parse(
-      xmlString
-    );
-    const workingCopy = cloneDeep(svgToJS);
+    const svgToJS = parser.parse(xmlString);
+    const workingCopy = _.cloneDeep(svgToJS);
 
     xmlString = buildXml(workingCopy);
 
