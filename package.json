@@ -5,7 +5,8 @@
   "private": true,
   "workspaces": [
     "buildSrc",
-    "doki-build-source"
+    "doki-build-source",
+    "../doki-build-source"
   ],
   "scripts": {
     "getDokiBuildSrc": "git clone https://github.com/ZimCodes/doki-build-source.git",
