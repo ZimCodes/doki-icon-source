@@ -1048,6 +1048,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^25.0.1":
+  version: 25.0.1
+  resolution: "@types/node@npm:25.0.1"
+  dependencies:
+    undici-types: "npm:~7.16.0"
+  checksum: 10c0/1d5ca9f240d0cf8e43d5281c0e6ee96fb22d37dc2e5ef52c6ca71de47957a6128e124990cedf5b14c03d0250737bd78ad370d93bcf1729a75ca4e54384fdd51a
+  languageName: node
+  linkType: hard
+
 "@types/stack-utils@npm:^2.0.3":
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
@@ -1955,11 +1964,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"doki-build-source@workspace:*, doki-build-source@workspace:doki-build-source":
+"doki-build-source@workspace:*, doki-build-source@workspace:../doki-build-source":
   version: 0.0.0-use.local
-  resolution: "doki-build-source@workspace:doki-build-source"
+  resolution: "doki-build-source@workspace:../doki-build-source"
   dependencies:
-    "@types/node": "npm:^24.10.2"
+    "@types/node": "npm:^25.0.1"
     typescript: "npm:^5.9.3"
   languageName: unknown
   linkType: soft
