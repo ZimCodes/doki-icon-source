@@ -1,5 +1,6 @@
 Doki Theme Icons - Maintenance
 ---
+> [!NOTE]
 > Below are the statements by the original maintainer, @Unthrottled
 <div align="center">
     <img src="https://doki.assets.unthrottled.io/misc/doki_icons_logo.svg" ></img>
