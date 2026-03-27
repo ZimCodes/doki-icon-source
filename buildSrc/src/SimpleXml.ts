@@ -59,11 +59,9 @@ function buildXml(workingCopy: any): string {
 Promise.resolve()
   .then(async () => {
     const svgPath =
-      "C:\\Users\\myself\\workspace\\doki\\iconSource\\icons\\exported\\breakpoint.svg";
-    // "/Users/alexsimons/workspace/doki-theme-icons/icons/exported/breakpoint.svg";
+      "../icons/exported/breakpoint.svg";
     const generatedFilePath =
-      "C:\\Users\\myself\\workspace\\doki\\iconSource\\icons\\generated\\breakpoint.svg";
-    // "/Users/alexsimons/workspace/doki-theme-icons/icons/generated/breakpoint.svg";
+      "../icons/generated/breakpoint.svg";
     let xmlString = await readFile(svgPath, { encoding: "utf-8" });
     const svgToJS = parser.parse(xmlString);
     const workingCopy = _.cloneDeep(svgToJS);
