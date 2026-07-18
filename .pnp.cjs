@@ -1704,186 +1704,6 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
-    ["@typescript/typescript-aix-ppc64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-aix-ppc64-npm-7.0.2-ffbfd19887/node_modules/@typescript/typescript-aix-ppc64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-aix-ppc64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-darwin-arm64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-darwin-arm64-npm-7.0.2-8826daafc0/node_modules/@typescript/typescript-darwin-arm64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-darwin-arm64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-darwin-x64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-darwin-x64-npm-7.0.2-234d81ae3d/node_modules/@typescript/typescript-darwin-x64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-darwin-x64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-freebsd-arm64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-freebsd-arm64-npm-7.0.2-43184e06db/node_modules/@typescript/typescript-freebsd-arm64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-freebsd-arm64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-freebsd-x64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-freebsd-x64-npm-7.0.2-35f5f0f2c4/node_modules/@typescript/typescript-freebsd-x64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-freebsd-x64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-linux-arm", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-linux-arm-npm-7.0.2-9cb6727d17/node_modules/@typescript/typescript-linux-arm/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-linux-arm", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-linux-arm64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-linux-arm64-npm-7.0.2-9cacfc53a0/node_modules/@typescript/typescript-linux-arm64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-linux-arm64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-linux-loong64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-linux-loong64-npm-7.0.2-d1f3d396c5/node_modules/@typescript/typescript-linux-loong64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-linux-loong64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-linux-mips64el", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-linux-mips64el-npm-7.0.2-7b54c23687/node_modules/@typescript/typescript-linux-mips64el/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-linux-mips64el", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-linux-ppc64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-linux-ppc64-npm-7.0.2-a39aeea301/node_modules/@typescript/typescript-linux-ppc64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-linux-ppc64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-linux-riscv64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-linux-riscv64-npm-7.0.2-7434856b88/node_modules/@typescript/typescript-linux-riscv64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-linux-riscv64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-linux-s390x", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-linux-s390x-npm-7.0.2-1055facb62/node_modules/@typescript/typescript-linux-s390x/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-linux-s390x", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-linux-x64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-linux-x64-npm-7.0.2-8dd7ff8d24/node_modules/@typescript/typescript-linux-x64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-linux-x64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-netbsd-arm64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-netbsd-arm64-npm-7.0.2-1cfe5c4cb0/node_modules/@typescript/typescript-netbsd-arm64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-netbsd-arm64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-netbsd-x64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-netbsd-x64-npm-7.0.2-ec82796d7b/node_modules/@typescript/typescript-netbsd-x64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-netbsd-x64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-openbsd-arm64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-openbsd-arm64-npm-7.0.2-927ea58610/node_modules/@typescript/typescript-openbsd-arm64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-openbsd-arm64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-openbsd-x64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-openbsd-x64-npm-7.0.2-7129954065/node_modules/@typescript/typescript-openbsd-x64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-openbsd-x64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-sunos-x64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-sunos-x64-npm-7.0.2-59ec25aeda/node_modules/@typescript/typescript-sunos-x64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-sunos-x64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-win32-arm64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-win32-arm64-npm-7.0.2-f7698787dc/node_modules/@typescript/typescript-win32-arm64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-win32-arm64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@typescript/typescript-win32-x64", [\
-      ["npm:7.0.2", {\
-        "packageLocation": "./.yarn/unplugged/@typescript-typescript-win32-x64-npm-7.0.2-9496ec309c/node_modules/@typescript/typescript-win32-x64/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-win32-x64", "npm:7.0.2"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
     ["@ungap/structured-clone", [\
       ["npm:1.3.0", {\
         "packageLocation": "../../../../AppData/Local/Yarn/Berry/cache/@ungap-structured-clone-npm-1.3.0-aea1bdf957-10c0.zip/node_modules/@ungap/structured-clone/",\
@@ -3013,7 +2833,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@types/node", "npm:26.1.1"],\
           ["doki-build-source", "workspace:../doki-build-source"],\
-          ["typescript", "patch:typescript@npm%3A7.0.2#optional!builtin<compat/typescript>::version=7.0.2&hash=3bafbf"]\
+          ["typescript", "patch:typescript@npm%3A6.0.3#optional!builtin<compat/typescript>::version=6.0.3&hash=5786d5"]\
         ],\
         "linkType": "SOFT"\
       }]\
@@ -6002,33 +5822,6 @@ const RAW_RUNTIME_STATE =
           ["typescript", "patch:typescript@npm%3A6.0.3#optional!builtin<compat/typescript>::version=6.0.3&hash=5786d5"]\
         ],\
         "linkType": "HARD"\
-      }],\
-      ["patch:typescript@npm%3A7.0.2#optional!builtin<compat/typescript>::version=7.0.2&hash=3bafbf", {\
-        "packageLocation": "./.yarn/unplugged/typescript-patch-4859cbaf66/node_modules/typescript/",\
-        "packageDependencies": [\
-          ["@typescript/typescript-aix-ppc64", "npm:7.0.2"],\
-          ["@typescript/typescript-darwin-arm64", "npm:7.0.2"],\
-          ["@typescript/typescript-darwin-x64", "npm:7.0.2"],\
-          ["@typescript/typescript-freebsd-arm64", "npm:7.0.2"],\
-          ["@typescript/typescript-freebsd-x64", "npm:7.0.2"],\
-          ["@typescript/typescript-linux-arm", "npm:7.0.2"],\
-          ["@typescript/typescript-linux-arm64", "npm:7.0.2"],\
-          ["@typescript/typescript-linux-loong64", "npm:7.0.2"],\
-          ["@typescript/typescript-linux-mips64el", "npm:7.0.2"],\
-          ["@typescript/typescript-linux-ppc64", "npm:7.0.2"],\
-          ["@typescript/typescript-linux-riscv64", "npm:7.0.2"],\
-          ["@typescript/typescript-linux-s390x", "npm:7.0.2"],\
-          ["@typescript/typescript-linux-x64", "npm:7.0.2"],\
-          ["@typescript/typescript-netbsd-arm64", "npm:7.0.2"],\
-          ["@typescript/typescript-netbsd-x64", "npm:7.0.2"],\
-          ["@typescript/typescript-openbsd-arm64", "npm:7.0.2"],\
-          ["@typescript/typescript-openbsd-x64", "npm:7.0.2"],\
-          ["@typescript/typescript-sunos-x64", "npm:7.0.2"],\
-          ["@typescript/typescript-win32-arm64", "npm:7.0.2"],\
-          ["@typescript/typescript-win32-x64", "npm:7.0.2"],\
-          ["typescript", "patch:typescript@npm%3A7.0.2#optional!builtin<compat/typescript>::version=7.0.2&hash=3bafbf"]\
-        ],\
-        "linkType": "HARD"\
       }]\
     ]],\
     ["uglify-js", [\
@@ -6078,7 +5871,7 @@ const RAW_RUNTIME_STATE =
     ]],\
     ["unrs-resolver", [\
       ["npm:1.11.1", {\
-        "packageLocation": "./.yarn/unplugged/unrs-resolver-npm-1.11.1-9828edd1f1/node_modules/unrs-resolver/",\
+        "packageLocation": "../../../../AppData/Local/Yarn/Berry/cache/unrs-resolver-npm-1.11.1-9828edd1f1-10c0.zip/node_modules/unrs-resolver/",\
         "packageDependencies": [\
           ["@unrs/resolver-binding-android-arm-eabi", "npm:1.11.1"],\
           ["@unrs/resolver-binding-android-arm64", "npm:1.11.1"],\
